@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Vanilla JS Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.fluid.classless.min.css">
+</head>
+
+<body>
+<main>
+    <div>
+        <h1>Vanilla JS Example</h1>
+        <hr>
+        <button id="fetch-users">Fetch Users</button>
+    </div>
+    <table id="tbl-users">
+        <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Tel</th>
+            <!-- Add Age column -->
+            <th>Age</th>
+            <!-- Add gender column, with two different emojis -->
+            <th>Gender</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</main>
+
+<script>
+    // Fill the table with https://randomuser.me/api/?results=20 when clicking the `fetch-users` button
+
+    var generateBtn = document.getElementById('fetch-users');
+    generateBtn.addEventListener('click', fetchData);
+
+    function fetchData() {
+    fetch('https://randomuser.me/api/?results=20')
+        .then(function (response) {
+        if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+            return;
+        }
+        return response.json();
+        })
+        .then(function (data) {
+        const tbody = document.querySelector('#tbl-users tbody');
+        tbody.innerHTML = ''; 
+
+        data.results.forEach(function (user) {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+            <td><img src="${user.picture.thumbnail}" alt="User Photo" /></td>
+            <td>${user.name.first} ${user.name.last}</td>
+            <td>${user.email}</td>
+            <td>${user.phone}</td>
+            <td>${user.dob.age}</td>
+            <td>${user.gender}</td>
+            `;
+
+            tbody.appendChild(row);
+        });
+        })
+        .catch(function (err) {
+        console.log('Fetch Error :-S', err);
+        });
+}
+
+    // Filter user by gender
+    // Sort user by age
+    // Search user by name
+    // Add users instead of replacing them.
+</script>
+</body>
+</html>
